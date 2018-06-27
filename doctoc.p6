@@ -5,9 +5,12 @@ use v6;
 
 sub MAIN(Str $fileName){
     my $fh = open $fileName,:rw;
-    dealWith(slurp $fh)
+    dealWith($fh);
 }
 
-sub dealWith(Str $c){
-    say $c;
+sub dealWith(IO::Handle $fh){
+    for $fh.lines {
+        say $_;
+
+    }
 }
