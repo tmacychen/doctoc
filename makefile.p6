@@ -3,4 +3,4 @@
 use v6;
 
 
-shell './topic.p6 test_file/test.md';
+shell './doctoc.p6 test_file/test.md';
