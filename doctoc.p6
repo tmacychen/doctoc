@@ -9,10 +9,11 @@ sub MAIN($fileName) {
 
 ## 遍历文件找到标题
     for $fileName.IO.lines {
-        push @toc,"$_\n" if $_ ~~ /^\#+ /;
+        push @toc,"$_" if $_ ~~ /^\#+ /;
     }
 
     @toc = trans(@toc);
+#    say @toc;
 ## 拷贝文件到临时文件中，当遇到目录标志，将标题拷贝到文件中。
     my $tmp_h = open($tmpFile,:rw);
     for $fileName.IO.lines {
@@ -24,8 +25,22 @@ sub MAIN($fileName) {
             $tmp_h.seek(0,SeekType::SeekFromCurrent);
         }
     }
+    shell("cp $tmpFile $fileName");
 }
 
+
 sub trans(@a) {
+    my $n = @a.elems;
+
+    while $n != 0 {
+        my $i = @a.shift;
+        given $i {
+            when $i ~~ /^\# ** {4} (.*)/ { @a.push: "           - [$0](####$0)";}
+            when $i ~~ /^\# ** {3} (.*)/ { @a.push: "       - [$0](###$0)"}
+            when $i ~~ /^\# ** {2} (.*)/ { @a.push: "   - [$0](##$0)"}
+            when $i ~~ /^\#? (.*)/ { @a.push: "- [$0](#$0)"}
+        }
+        $n--;
+    }
     return @a;
 }
